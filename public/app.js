@@ -116,6 +116,17 @@ $("list").addEventListener("click", (e) => {
   flush();
 });
 
+// Keep the screen on while the app is open. The lock drops when the app is hidden, so re-take it.
+let wakeLock = null;
+async function keepAwake() {
+  if (wakeLock || !navigator.wakeLock || document.visibilityState !== "visible") return;
+  try {
+    wakeLock = await navigator.wakeLock.request("screen");
+    wakeLock.addEventListener("release", () => { wakeLock = null; });
+  } catch {}
+}
+document.addEventListener("pointerdown", keepAwake); // some browsers only grant it after a tap
+
 $("prev").onclick = () => shift(-1);
 $("next").onclick = () => shift(1);
 
@@ -129,6 +140,7 @@ function refresh() {
   render();
   flush();
   load(viewing);
+  keepAwake();
 }
 document.addEventListener("visibilitychange", () => document.visibilityState === "visible" && refresh());
 window.addEventListener("online", flush);
@@ -138,5 +150,6 @@ build();
 render();
 load(viewing);
 flush();
+keepAwake();
 
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
