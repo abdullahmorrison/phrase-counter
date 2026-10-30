@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Phrase Counter</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#0f0f12" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f5f2" media="(prefers-color-scheme: light)">
+<style>
+  :root {
+    --bg: #f6f5f2; --card: #ffffff; --text: #18181b; --muted: #71717a; --line: #e7e5e0;
+    --btn: #f1f0ec; --btn-press: #e4e2dc;
+    --c0: #e11d48; --c1: #2563eb; --c2: #d97706; --c3: #059669;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f0f12; --card: #19191e; --text: #f4f4f5; --muted: #8b8b94; --line: #26262d;
+      --btn: #24242b; --btn-press: #30303a;
+      --c0: #fb7185; --c1: #60a5fa; --c2: #fbbf24; --c3: #34d399;
+    }
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); }
+  body {
+    font: 16px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    min-height: 100dvh; display: flex; flex-direction: column;
+    padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+    user-select: none;
+  }
+  header { display: flex; align-items: center; justify-content: space-between; max-width: 720px; width: 100%; margin: 0 auto 16px; }
+  .day { text-align: center; }
+  .day strong { display: block; font-size: 1.15rem; }
+  .day span { color: var(--muted); font-size: .9rem; font-variant-numeric: tabular-nums; }
+  .nav { width: 44px; height: 44px; border: 0; border-radius: 12px; background: var(--btn); color: var(--text); font-size: 1.3rem; cursor: pointer; }
+  .nav:disabled { opacity: .3; cursor: default; }
+  main { flex: 1; display: grid; gap: 12px; max-width: 720px; width: 100%; margin: 0 auto; grid-template-columns: 1fr; align-content: start; }
+  @media (min-width: 640px) { main { grid-template-columns: 1fr 1fr; } }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 16px;
+    display: grid; grid-template-columns: 56px 1fr 56px; align-items: center; gap: 12px;
+    border-left: 5px solid var(--accent);
+  }
+  .mid { text-align: center; min-width: 0; }
+  .phrase { font-weight: 600; font-size: 1rem; color: var(--muted); }
+  .count { font-size: 2.6rem; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; color: var(--accent); }
+  .count.bump { animation: bump .18s ease-out; }
+  @keyframes bump { 50% { transform: scale(1.15); } }
+  .step {
+    width: 56px; height: 56px; border: 0; border-radius: 16px; background: var(--btn); color: var(--text);
+    font-size: 1.8rem; font-weight: 500; cursor: pointer; touch-action: manipulation;
+  }
+  .step.plus { background: var(--accent); color: var(--card); }
+  .step:active { transform: scale(.94); }
+  .step.minus:active { background: var(--btn-press); }
+  .step:disabled { opacity: .3; }
+  footer { max-width: 720px; width: 100%; margin: 16px auto 0; display: flex; justify-content: space-between; color: var(--muted); font-size: .9rem; }
+  footer b { color: var(--text); font-variant-numeric: tabular-nums; }
+  #sync.pending { color: var(--c2); }
+</style>
+</head>
+<body>
+<header>
+  <button class="nav" id="prev" aria-label="Previous day">‹</button>
+  <div class="day"><strong id="label">Today</strong><span id="date"></span></div>
+  <button class="nav" id="next" aria-label="Next day">›</button>
+</header>
+<main id="list"></main>
+<footer><span>Total <b id="total">0</b></span><span id="sync"></span></footer>
+<script src="app.js"></script>
+</body>
+</html>
